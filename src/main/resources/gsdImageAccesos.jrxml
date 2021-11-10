@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="gsdImageAccesos" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bf9ae0a1-c61f-4a34-9fd3-fc98a3bd30dc">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="usuarioReporte" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechaInicio" class="java.lang.String"/>
+	<parameter name="fechaFin" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="codigoUsuario" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="condicionFechaIni" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[($P{fechaInicio} == null || $P{fechaInicio}.isEmpty()) ? " " : " AND TRUNC(FEC_INIACCE) >= TO_DATE('"+ $P{fechaInicio} +"','dd/mm/yyyy') "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="condicionFechaFin" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[($P{fechaFin} == null || $P{fechaFin}.isEmpty()) ? " " : " AND TRUNC(FEC_INIACCE) <= TO_DATE('"+ $P{fechaFin} +"','dd/mm/yyyy') "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="condicionUsuario" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[($P{codigoUsuario} == null || $P{codigoUsuario}.isEmpty()) ? " " : " AND COD_USUAREGI ='"+$P{codigoUsuario}+"'"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="plsql">
+		<![CDATA[SELECT COD_USUAREGI, DES_DIREIP, TIP_REGISTRO, TO_CHAR(TRUNC(FEC_INIACCE),'dd/MM/yyyy') AS FEC_INIACCE, TO_CHAR(FEC_INIACCE,'HH24:MI:SS') AS HORA
+FROM TM_LOG_ACCESO
+WHERE 1=1
+$P!{condicionFechaIni}
+$P!{condicionFechaFin}
+$P!{condicionUsuario}
+ORDER BY ID_ACCESO ASC]]>
+	</queryString>
+	<field name="COD_USUAREGI" class="java.lang.String"/>
+	<field name="DES_DIREIP" class="java.lang.String"/>
+	<field name="TIP_REGISTRO" class="java.lang.String"/>
+	<field name="FEC_INIACCE" class="java.lang.String"/>
+	<field name="HORA" class="java.lang.String"/>
+	<group name="Fecha">
+		<groupExpression><![CDATA[$F{FEC_INIACCE}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<textField>
+					<reportElement x="11" y="0" width="89" height="20" uuid="5ae61d5a-1d54-41b7-a2ba-fa018d1dab7e"/>
+					<textFieldExpression><![CDATA[$F{FEC_INIACCE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Usuario">
+		<groupExpression><![CDATA[$F{COD_USUAREGI}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement x="101" y="0" width="100" height="20" uuid="751df7c6-c207-4956-a261-e2a74084e9dc"/>
+					<textFieldExpression><![CDATA[$F{COD_USUAREGI}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="83">
+			<printWhenExpression><![CDATA[$P{usuarioReporte}!=null]]></printWhenExpression>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="455" y="21" width="100" height="20" uuid="824722b1-f1b1-40e1-a6c1-a52e49c49ad3"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="459" y="1" width="81" height="20" uuid="3d3cdd82-1e27-44ac-b972-015596b66f9e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="60" width="100" height="20" uuid="c2668632-c008-4600-9eff-f9fbc89fe1cc"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$P{usuarioReporte}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="540" y="1" width="15" height="20" uuid="ab9c4f4d-4dd1-426b-8add-e6a4ea3c69d9"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="165" y="21" width="203" height="39" uuid="fc5f2b53-4365-4f5e-88bc-47574ce7dabf"/>
+				<textElement>
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LOG DE ACCESO]]></text>
+			</staticText>
+			<textField pattern="HH.mm.ss">
+				<reportElement x="455" y="41" width="100" height="20" uuid="e5e98479-739f-4540-aa53-ecdc9f828ff9"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement x="11" y="0" width="89" height="20" uuid="94650063-b793-4790-a8be-3cbeb1265820"/>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="0" width="112" height="20" uuid="20712a36-468c-4efc-98dc-c9d5cfdec090"/>
+				<text><![CDATA[USUARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="212" y="0" width="73" height="20" uuid="5f0f4c1a-bc36-4f2f-8dfd-f4b59860e4e6"/>
+				<text><![CDATA[HORA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="285" y="0" width="106" height="20" uuid="d0175b4f-b19d-4fe4-9047-aabf7abdd86d"/>
+				<text><![CDATA[IP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="391" y="0" width="142" height="20" uuid="6d2d9858-7c71-4e1b-9e21-fb43d88df880"/>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<line>
+				<reportElement x="1" y="19" width="554" height="1" uuid="c1e908cd-1275-439e-88d6-1d86fbb59060"/>
+			</line>
+			<line>
+				<reportElement x="1" y="0" width="554" height="1" uuid="b3648909-0010-4cf6-825d-5de8373457ff"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement x="285" y="0" width="106" height="20" uuid="674dbab8-8511-4bfe-a575-16dd9713164a">
+					<printWhenExpression><![CDATA[!$F{DES_DIREIP}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{DES_DIREIP}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="391" y="0" width="164" height="20" uuid="b33d0824-c0b4-48d0-b261-0296127068ec"/>
+				<textFieldExpression><![CDATA[( $F{TIP_REGISTRO}.equals("01") ? "ACCESO CORRECTO" :
+( $F{TIP_REGISTRO}.equals("02") ? "USUARIO NO EXISTE" :
+( $F{TIP_REGISTRO}.equals("03") ? "ACCESO INCORRECTO" :
+( $F{TIP_REGISTRO}.equals("04") ? "USUARIO BLOQUEADO" :
+( $F{TIP_REGISTRO}.equals("05") ? "USUARIO INACTIVO" :
+( $F{TIP_REGISTRO}.equals("06") ? "SESION CERRADA" :
+ "" ))))))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="212" y="0" width="73" height="20" uuid="a64e3c61-97ca-4c8c-a148-f3e582ac9e3d"/>
+				<textFieldExpression><![CDATA[$F{HORA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
